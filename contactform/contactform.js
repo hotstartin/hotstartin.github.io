@@ -90,23 +90,49 @@ jQuery(document).ready(function($) {
     });
     if (ferror) return false;
     else var str = $(this).serialize();
+    // $.ajax({
+    //   type: "POST",
+    //   url: "contactform/contactform.php",
+    //   data: str,
+    //   success: function(msg) {
+    //     // alert(msg);
+    //     if (msg == 'OK') {
+    //       $("#sendmessage").addClass("show");
+    //       $("#errormessage").removeClass("show");
+    //       $('.contactForm').find("input, textarea").val("");
+    //     } else {
+    //       $("#sendmessage").removeClass("show");
+    //       $("#errormessage").addClass("show");
+    //       $('#errormessage').html(msg);
+    //     }
+
+    //   }
+    // });
+    jQuery.support.cors = true;
+    var phone = $("#phone").val();
+    var name = $("#name").val();
+    var email = $("#email").val();
+    var message = $("#message").val();
     $.ajax({
-      type: "POST",
-      url: "contactform/contactform.php",
-      data: str,
-      success: function(msg) {
-        // alert(msg);
-        if (msg == 'OK') {
-          $("#sendmessage").addClass("show");
-          $("#errormessage").removeClass("show");
-          $('.contactForm').find("input, textarea").val("");
-        } else {
+        url:"https://api.hotstart.in",
+        dataType: 'json', // Notice! JSONP <-- P (lowercase)
+        data: { "phone":phone, "name":name,"email":email,"message":message },
+        success:function(json){
+          if (json.success==true) {
+            $("#sendmessage").addClass("show");
+            $("#errormessage").removeClass("show");
+            $('.contactForm').find("input, textarea").val("");
+          } else {
+            $("#sendmessage").removeClass("show");
+            $("#errormessage").addClass("show");
+            $('#errormessage').html("Express Request Error!");
+          }
+        },
+        error:function(){
           $("#sendmessage").removeClass("show");
           $("#errormessage").addClass("show");
-          $('#errormessage').html(msg);
-        }
-
-      }
+          $('#errormessage').html("Some Error Occured!");
+        }      
     });
     return false;
   });
