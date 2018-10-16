@@ -113,26 +113,41 @@ jQuery(document).ready(function($) {
     var name = $("#name").val();
     var email = $("#email").val();
     var message = $("#message").val();
+
     $.ajax({
-        url:"https://api.hotstart.in",
-        dataType: 'json', // Notice! JSONP <-- P (lowercase)
-        data: { "phone":phone, "name":name,"email":email,"message":message },
+        // url:"http://localhost:3000",
+        url:"https://79w0g9yxe0.execute-api.us-east-1.amazonaws.com/prod",
+        dataType: 'jsonp', // Notice! JSONP <-- P (lowercase)
+        async: false,
+        cache: false,
+        type:"GET",
+        crossDomain: true,
+        jsonpCallback: "sendmail",
+        data: { "phone":phone, "name":name, "email":email, "message":message,format: "json" },
         success:function(json){
-          if (json.success==true) {
-            $("#sendmessage").addClass("show");
-            $("#errormessage").removeClass("show");
+          // console.log("success");
+          // console.log(json);
+          // if (json.success==true) {
             $('.contactForm').find("input, textarea").val("");
-          } else {
-            $("#sendmessage").removeClass("show");
-            $("#errormessage").addClass("show");
-            $('#errormessage').html("Express Request Error!");
-          }
-        },
-        error:function(){
-          $("#sendmessage").removeClass("show");
-          $("#errormessage").addClass("show");
-          $('#errormessage').html("Some Error Occured!");
-        }      
+            $("#errormessage").hide();
+            $("#sendmessage").show();
+            // } else {
+              // $("#sendmessage").removeClass("show");
+              // $("#errormessage").addClass("show");
+              // $('#errormessage').html("Express Request Error!");
+              // }
+            },
+            error:function(xhr, status, msg){
+              $("#sendmessage").hide();
+              $("#errormessage").show();
+              // console.log(xhr);
+              console.log(status);
+              console.log(msg);
+              // $("#sendmessage").removeClass("show");
+              // $("#errormessage").addClass("show");
+              // $('#errormessage').html("Some Error Occured! Please try sending us email on info@hotstart.in");
+        }  
+        
     });
     return false;
   });
