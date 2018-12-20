@@ -109,45 +109,31 @@ jQuery(document).ready(function($) {
     //   }
     // });
     jQuery.support.cors = true;
-    var phone = $("#phone").val();
-    var name = $("#name").val();
-    var email = $("#email").val();
-    var message = $("#message").val();
-
+    jQuery.support.cors = true;
+    var domain = window.location.href;
+    var name = $("input[name='name']").val();
+    var email = $("input[name='email']").val();
+    var phone = $("input[name='phone']").val();
+    var message = $("textarea[name='message']").val();
     $.ajax({
-        // url:"http://localhost:3000",
         url:"https://79w0g9yxe0.execute-api.us-east-1.amazonaws.com/prod",
-        dataType: 'jsonp', // Notice! JSONP <-- P (lowercase)
+        dataType: 'json',
         async: false,
         cache: false,
-        type:"GET",
+        type:"POST",
         crossDomain: true,
-        jsonpCallback: "sendmail",
-        data: { "phone":phone, "name":name, "email":email, "message":message,format: "json" },
+        data: { "domain":domain,"phone":phone, "name":name, "email":email, "message":message,format: "json" },
         success:function(json){
-          // console.log("success");
-          // console.log(json);
-          // if (json.success==true) {
-            $('.contactForm').find("input, textarea").val("");
-            $("#errormessage").hide();
-            $("#sendmessage").show();
-            // } else {
-              // $("#sendmessage").removeClass("show");
-              // $("#errormessage").addClass("show");
-              // $('#errormessage').html("Express Request Error!");
-              // }
+            $('#contactform').find("input, textarea").val("");
+            var msg = "We have received you Query! We will be back ASAP";
+            $(document).find('#contacterror').remove();
+            $('#contactform').prepend('<div id="contacterror" style="border: 4px solid green;margin: 5px 0;padding: 6px;">'+msg+'</div>');
             },
-            error:function(xhr, status, msg){
-              $("#sendmessage").hide();
-              $("#errormessage").show();
-              // console.log(xhr);
-              console.log(status);
-              console.log(msg);
-              // $("#sendmessage").removeClass("show");
-              // $("#errormessage").addClass("show");
-              // $('#errormessage').html("Some Error Occured! Please try sending us email on info@hotstart.in");
+        error:function(xhr, status, msg){
+          var msg = "Error in Sending mail! Please send us your query in email!";
+          $(document).find('#contacterror').remove();
+          $('#contactform').prepend('<div id="contacterror" style="border: 4px solid red;margin: 5px 0;padding: 6px;">'+msg+'</div>');
         }  
-        
     });
     return false;
   });
